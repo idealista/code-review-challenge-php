@@ -78,7 +78,7 @@ class InFileSystemPersistence implements AdRepository
             $adVO->getId(),
             Typology::from($adVO->getTypology()),
             $adVO->getDescription(),
-            array_map([__CLASS__, 'mapPicturesToDomain'], $adVO->getPictures()),
+            array_map([$this, 'mapPicturesToDomain'], $adVO->getPictures()),
             $adVO->getHouseSize(),
             $adVO->getGardenSize(),
             $adVO->getScore(),

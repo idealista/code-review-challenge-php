@@ -1,0 +1,14 @@
+ads_quality:
+    path: /ads/quality
+    controller: App\Infrastructure\Api\AdsController::qualityListing
+    methods: GET
+
+ads_public:
+    path: /ads/public
+    controller: App\Infrastructure\Api\AdsController::publicListing
+    methods: GET
+
+ads_score:
+    path: /ads/score
+    controller: App\Infrastructure\Api\AdsController::calculateScore
+    methods: GET

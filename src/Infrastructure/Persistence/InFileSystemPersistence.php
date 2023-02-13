@@ -19,7 +19,7 @@ class InFileSystemPersistence implements AdRepository
 
     public function __construct()
     {
-        $this->storagePath = sys_get_temp_dir()."/database";
+        $this->storagePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'database';
         $this->hydrate();
     }
 
@@ -36,37 +36,33 @@ class InFileSystemPersistence implements AdRepository
 
     public function findRelevantAds(): array
     {
-        return array_map([$this, 'mapAdsToDomain'], array_filter($this->ads, function (AdVO $ad) {
-            return $ad->getScore() >= Constants::FORTY;
-        }));
+        return array_map([$this, 'mapAdsToDomain'], array_filter($this->ads, fn (AdVO $ad): bool => $ad->getScore() >= Constants::FORTY));
     }
 
     public function findIrrelevantAds(): array
     {
-        return array_map([$this, 'mapAdsToDomain'], array_filter($this->ads, function (AdVO $ad) {
-            return $ad->getScore() < Constants::FORTY;
-        }));
+        return array_map([$this, 'mapAdsToDomain'], array_filter($this->ads, fn (AdVO $ad): bool => $ad->getScore() < Constants::FORTY));
     }
 
     private function saveAd(Ad $ad): void
     {
-        array_walk($this->ads, function (AdVO $adVO, $index) use ($ad) {
+        array_walk($this->ads, function (AdVO $adVO, $index) use ($ad): void {
             if ($adVO->getId() === $ad->getId()) {
-                unset ($this->ads[$index]);
+                unset($this->ads[$index]);
             }
         });
         array_push($this->ads, $this->mapAdToPersistence($ad));
 
-        foreach($ad->getPictures() as $picture) {
+        foreach ($ad->getPictures() as $picture) {
             $this->savePicture($picture);
         }
     }
 
     private function savePicture(Picture $picture): void
     {
-        array_walk($this->pictures, function (PictureVO $pictureVO, $index) use ($picture) {
+        array_walk($this->pictures, function (PictureVO $pictureVO, $index) use ($picture): void {
             if ($pictureVO->getId() === $picture->getId()) {
-                unset ($this->pictures[$index]);
+                unset($this->pictures[$index]);
             }
         });
         array_push($this->pictures, $this->mapPictureToPersistence($picture));
@@ -88,9 +84,7 @@ class InFileSystemPersistence implements AdRepository
 
     private function mapPicturesToDomain(int $pictureId): ?Picture
     {
-        $pictureVO = current(array_filter($this->pictures, function (PictureVO $pictureVO) use ($pictureId) {
-            return $pictureVO->getId() === $pictureId;
-        }));
+        $pictureVO = current(array_filter($this->pictures, fn (PictureVO $pictureVO): bool => $pictureVO->getId() === $pictureId));
 
         return new Picture($pictureVO->getId(), $pictureVO->getUrl(), Quality::from($pictureVO->getQuality()));
     }
@@ -101,7 +95,7 @@ class InFileSystemPersistence implements AdRepository
             $ad->getId(),
             $ad->getTypology()->name,
             $ad->getDescription(),
-            array_map(fn (Picture $picture) => $picture->getId(), $ad->getPictures()),
+            array_map(fn (Picture $picture): int => $picture->getId(), $ad->getPictures()),
             $ad->getHouseSize(),
             $ad->getGardenSize(),
             $ad->getScore(),
@@ -124,23 +118,23 @@ class InFileSystemPersistence implements AdRepository
             return;
         }
 
-        array_push($this->ads, new AdVO(1, "CHALET", "Este piso es una ganga, compra, compra, COMPRA!!!!!", [], 300, null, null, null));
-        array_push($this->ads, new AdVO(2, "FLAT", "Nuevo ático céntrico recién reformado. No deje pasar la oportunidad y adquiera este ático de lujo", [4], 300, null, null, null));
-        array_push($this->ads, new AdVO(3, "CHALET", "", [2], 300, null, null, null));
-        array_push($this->ads, new AdVO(4, "FLAT", "Ático céntrico muy luminoso y recién reformado, parece nuevo", [5], 300, null, null, null));
-        array_push($this->ads, new AdVO(5, "FLAT", "Pisazo,", [3, 8], 300, null, null, null));
-        array_push($this->ads, new AdVO(6, "GARAGE", "", [6], 300, null, null, null));
-        array_push($this->ads, new AdVO(7, "GARAGE", "Garaje en el centro de Albacete", [], 300, null, null, null));
-        array_push($this->ads, new AdVO(8, "CHALET", "Maravilloso chalet situado en lAs afueras de un pequeño pueblo rural. El entorno es espectacular, las vistas magníficas. ¡Cómprelo ahora!", [1, 7], 300, null, null, null));
+        array_push($this->ads, new AdVO(1, 'CHALET', 'Este piso es una ganga, compra, compra, COMPRA!!!!!', [], 300, null, null, null));
+        array_push($this->ads, new AdVO(2, 'FLAT', 'Nuevo ático céntrico recién reformado. No deje pasar la oportunidad y adquiera este ático de lujo', [4], 300, null, null, null));
+        array_push($this->ads, new AdVO(3, 'CHALET', '', [2], 300, null, null, null));
+        array_push($this->ads, new AdVO(4, 'FLAT', 'Ático céntrico muy luminoso y recién reformado, parece nuevo', [5], 300, null, null, null));
+        array_push($this->ads, new AdVO(5, 'FLAT', 'Pisazo,', [3, 8], 300, null, null, null));
+        array_push($this->ads, new AdVO(6, 'GARAGE', '', [6], 300, null, null, null));
+        array_push($this->ads, new AdVO(7, 'GARAGE', 'Garaje en el centro de Albacete', [], 300, null, null, null));
+        array_push($this->ads, new AdVO(8, 'CHALET', 'Maravilloso chalet situado en lAs afueras de un pequeño pueblo rural. El entorno es espectacular, las vistas magníficas. ¡Cómprelo ahora!', [1, 7], 300, null, null, null));
 
-        array_push($this->pictures, new PictureVO(1, "https://www.idealista.com/pictures/1", "SD"));
-        array_push($this->pictures, new PictureVO(2, "https://www.idealista.com/pictures/2", "HD"));
-        array_push($this->pictures, new PictureVO(3, "https://www.idealista.com/pictures/3", "SD"));
-        array_push($this->pictures, new PictureVO(4, "https://www.idealista.com/pictures/4", "HD"));
-        array_push($this->pictures, new PictureVO(5, "https://www.idealista.com/pictures/5", "SD"));
-        array_push($this->pictures, new PictureVO(6, "https://www.idealista.com/pictures/6", "SD"));
-        array_push($this->pictures, new PictureVO(7, "https://www.idealista.com/pictures/7", "SD"));
-        array_push($this->pictures, new PictureVO(8, "https://www.idealista.com/pictures/8", "HD"));
+        array_push($this->pictures, new PictureVO(1, 'https://www.idealista.com/pictures/1', 'SD'));
+        array_push($this->pictures, new PictureVO(2, 'https://www.idealista.com/pictures/2', 'HD'));
+        array_push($this->pictures, new PictureVO(3, 'https://www.idealista.com/pictures/3', 'SD'));
+        array_push($this->pictures, new PictureVO(4, 'https://www.idealista.com/pictures/4', 'HD'));
+        array_push($this->pictures, new PictureVO(5, 'https://www.idealista.com/pictures/5', 'SD'));
+        array_push($this->pictures, new PictureVO(6, 'https://www.idealista.com/pictures/6', 'SD'));
+        array_push($this->pictures, new PictureVO(7, 'https://www.idealista.com/pictures/7', 'SD'));
+        array_push($this->pictures, new PictureVO(8, 'https://www.idealista.com/pictures/8', 'HD'));
     }
 
     private function loadFromFilesystem(): bool
@@ -163,7 +157,7 @@ class InFileSystemPersistence implements AdRepository
 
     private function saveToFilesystem(): void
     {
-        $fh = fopen($this->storagePath, "w");
+        $fh = fopen($this->storagePath, 'w');
         fwrite($fh, serialize($this));
         fclose($fh);
     }

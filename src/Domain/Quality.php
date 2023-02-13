@@ -8,9 +8,4 @@ enum Quality: String
 {
     case HD = 'HD';
     case SD = 'SD';
-
-    public function equals(Quality $value): bool
-    {
-        return $this === $value;
-    }
 }

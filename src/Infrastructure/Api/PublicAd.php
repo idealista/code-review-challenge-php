@@ -23,22 +23,22 @@ class PublicAd
         $this->id = $id;
     }
 
-    public function getTypology(): String
+    public function getTypology(): string
     {
         return $this->typology;
     }
 
-    public function setTypology(String $typology): void
+    public function setTypology(string $typology): void
     {
         $this->typology = $typology;
     }
 
-    public function getDescription(): String
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function setDescription(String $description): void
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }

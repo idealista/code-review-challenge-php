@@ -25,22 +25,24 @@ final class AdsServiceImplTest extends TestCase
         $scoreService->calculateScores();
     }
 
-    private function relevantAd(): Ad {
+    private function relevantAd(): Ad
+    {
         return new Ad(
             1,
             Typology::FLAT,
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dictum felis elit, vitae cursus erat blandit vitae. Maecenas eget efficitur massa. Maecenas ut dolor eget enim consequat iaculis vitae nec elit. Maecenas eu urna nec massa feugiat pharetra. Sed eu quam imperdiet orci lobortis fermentum. Sed odio justo, congue eget iaculis.",
-            [new Picture(1, "http://urldeprueba.com/1", Quality::HD), new Picture(2, "http://urldeprueba.com/2", Quality::HD)],
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dictum felis elit, vitae cursus erat blandit vitae. Maecenas eget efficitur massa. Maecenas ut dolor eget enim consequat iaculis vitae nec elit. Maecenas eu urna nec massa feugiat pharetra. Sed eu quam imperdiet orci lobortis fermentum. Sed odio justo, congue eget iaculis.',
+            [new Picture(1, 'http://urldeprueba.com/1', Quality::HD), new Picture(2, 'http://urldeprueba.com/2', Quality::HD)],
             50,
             0
         );
     }
 
-    private function  irrelevantAd(): Ad {
+    private function irrelevantAd(): Ad
+    {
         return new Ad(
             1,
             Typology::FLAT,
-            "",
+            '',
             [],
             100,
             0,

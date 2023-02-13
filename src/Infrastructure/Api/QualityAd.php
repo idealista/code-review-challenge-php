@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Api;
 
-use DateTime;
-
 class QualityAd
 {
     private int $id;
@@ -15,7 +13,7 @@ class QualityAd
     private int $houseSize;
     private ?int $gardenSize;
     private ?int $score;
-    private ?DateTime $irrelevantSince;
+    private ?\DateTime $irrelevantSince;
 
     public function getId(): int
     {
@@ -24,25 +22,25 @@ class QualityAd
 
     public function setId(int $id): void
     {
-       $this->id = $id;
+        $this->id = $id;
     }
 
-    public function getTypology(): String
+    public function getTypology(): string
     {
         return $this->typology;
     }
 
-    public function setTypology(String $typology): void
+    public function setTypology(string $typology): void
     {
         $this->typology = $typology;
     }
 
-    public function getDescription(): String
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    public function setDescription(String $description): void
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
@@ -87,13 +85,13 @@ class QualityAd
         $this->score = $score;
     }
 
-    public function getIrrelevantSince(): ?DateTime
+    public function getIrrelevantSince(): ?\DateTime
     {
         return $this->irrelevantSince;
     }
 
-    public function setIrrelevantSince(?DateTime $irrelevantSince): void
+    public function setIrrelevantSince(?\DateTime $irrelevantSince): void
     {
-         $this->irrelevantSince = $irrelevantSince;
+        $this->irrelevantSince = $irrelevantSince;
     }
 }

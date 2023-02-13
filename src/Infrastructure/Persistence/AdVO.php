@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence;
 
-use DateTime;
-
 class AdVO
 {
     public function __construct(
         private ?int $id = null,
-        private ?String $typology = null,
-        private ?String $description = null,
+        private ?string $typology = null,
+        private ?string $description = null,
         private ?array $pictures = null,
         private ?int $houseSize = null,
         private ?int $gardenSize = null,
         private ?int $score = null,
-        private ?DateTime $irrelevantSince = null,
+        private ?\DateTime $irrelevantSince = null,
     ) {
     }
 
@@ -30,22 +28,22 @@ class AdVO
         $this->id = $id;
     }
 
-    public function getTypology(): ?String
+    public function getTypology(): ?string
     {
         return $this->typology;
     }
 
-    public function setTypology(String $typology): void
+    public function setTypology(string $typology): void
     {
         $this->typology = $typology;
     }
 
-    public function getDescription(): ?String
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(String $description): void
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
@@ -90,14 +88,13 @@ class AdVO
         $this->score = $score;
     }
 
-    public function getIrrelevantSince(): ?DateTime
+    public function getIrrelevantSince(): ?\DateTime
     {
         return $this->irrelevantSince;
     }
 
-    public function setIrrelevantSince(DateTime $irrelevantSince): void
+    public function setIrrelevantSince(\DateTime $irrelevantSince): void
     {
         $this->irrelevantSince = $irrelevantSince;
     }
 }
-

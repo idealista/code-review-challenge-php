@@ -8,7 +8,7 @@ class Picture
 {
     public function __construct(
         private int $id,
-        private String $url,
+        private string $url,
         private Quality $quality,
     ) {
     }
@@ -23,12 +23,12 @@ class Picture
         $this->id = $id;
     }
 
-    public function getUrl(): String
+    public function getUrl(): string
     {
         return $this->url;
     }
 
-    public function setUrl(String $url): void
+    public function setUrl(string $url): void
     {
         $this->url = $url;
     }
@@ -43,23 +43,14 @@ class Picture
         $this->quality = $quality;
     }
 
-    public function toString(): String
-    {
-        return "Picture{" .
-            "id=" . $this->id .
-            ", url='" . $this->url . '\'' .
-            ", quality=" . $this->quality .
-            '}';
-    }
-
     public function equals(object $o): bool
     {
         if ($this === $o) return true;
-        if ($o === null || self::class !== $o::class) return false;
+        if (null === $o || self::class !== $o::class) return false;
 
         foreach (get_object_vars($this) as $property => $value) {
             if ($value && !isset($o->$property)) return false;
-            if ($value !== $o->$property) return false;
+            if ($o->$property !== $value) return false;
         }
 
         return true;
@@ -67,6 +58,15 @@ class Picture
 
     public function hashCode(): int
     {
-        return intval(hash('crc32b', $this->id . $this->url . $this->quality->name));
+        return intval(hash('crc32b', $this->toString()));
+    }
+
+    public function toString(): string
+    {
+        return 'Picture{'.
+            'id='.$this->id.
+            ", url='".$this->url.'\''.
+            ', quality='.$this->quality->value.
+            '}';
     }
 }

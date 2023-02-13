@@ -12,7 +12,6 @@ use App\Domain\Quality;
 use App\Domain\Typology;
 use App\Infrastructure\Api\PublicAd;
 use App\Infrastructure\Api\QualityAd;
-use DateTime;
 
 class AdsServiceImpl implements AdsService
 {
@@ -24,7 +23,7 @@ class AdsServiceImpl implements AdsService
     public function findPublicAds(): array
     {
         $ads = $this->adRepository->findRelevantAds();
-        usort($ads, function (Ad $first, Ad $last) {
+        usort($ads, function (Ad $first, Ad $last): bool {
             return $first->getScore() >= $last->getScore();
         });
 
@@ -35,11 +34,12 @@ class AdsServiceImpl implements AdsService
             $publicAd->setGardenSize($ad->getGardenSize());
             $publicAd->setHouseSize($ad->getHouseSize());
             $publicAd->setId($ad->getId());
-            $publicAd->setPictureUrls(array_map(fn (Picture $picture) => $picture->getUrl(), $ad->getPictures()));
+            $publicAd->setPictureUrls(array_map(fn (Picture $picture): string => $picture->getUrl(), $ad->getPictures()));
             $publicAd->setTypology($ad->getTypology()->name);
 
             array_push($result, $publicAd);
         }
+
         return $result;
     }
 
@@ -54,13 +54,14 @@ class AdsServiceImpl implements AdsService
             $qualityAd->setGardenSize($ad->getGardenSize());
             $qualityAd->setHouseSize($ad->getHouseSize());
             $qualityAd->setId($ad->getId());
-            $qualityAd->setPictureUrls(array_map(fn (Picture $picture) => $picture->getUrl(), $ad->getPictures()));
+            $qualityAd->setPictureUrls(array_map(fn (Picture $picture): string => $picture->getUrl(), $ad->getPictures()));
             $qualityAd->setTypology($ad->getTypology()->name);
             $qualityAd->setScore($ad->getScore());
             $qualityAd->setIrrelevantSince($ad->getIrrelevantSince());
 
             array_push($result, $qualityAd);
         }
+
         return $result;
     }
 
@@ -75,32 +76,32 @@ class AdsServiceImpl implements AdsService
     {
         $score = Constants::ZERO;
 
-        //Calcular puntuación por fotos
+        // Calculate score by photos
         if (empty($ad->getPictures())) {
-            $score -= Constants::TEN; //Si no hay fotos restamos 10 puntos
+            $score -= Constants::TEN; // Si no hay fotos restamos 10 puntos
         } else {
             foreach ($ad->getPictures() as $picture) {
-                if (Quality::HD->equals($picture->getQuality())) {
-                    $score += Constants::TWENTY; //Cada foto en alta definición aporta 20 puntos
+                if (Quality::HD === $picture->getQuality()) {
+                    $score += Constants::TWENTY; // Cada foto en alta definición aporta 20 puntos
                 } else {
-                    $score += Constants::TEN; //Cada foto normal aporta 10 puntos
+                    $score += Constants::TEN; // Cada foto normal aporta 10 puntos
                 }
             }
         }
 
-        //Calcular puntuación por descripción
+        // Calculate score by description
         $optDesc = $ad->getDescription() ?? null;
 
-       if (false === is_null($optDesc)) {
+        if (false === is_null($optDesc)) {
             $description = $optDesc;
 
             if (!empty($description)) {
                 $score += Constants::FIVE;
             }
 
-            $wds = explode(" ", mb_strtolower($description)); //número de palabras
+            $wds = explode(' ', mb_strtolower($description)); // Number of words
 
-            if (Typology::FLAT->equals($ad->getTypology())) {
+            if (Typology::FLAT === $ad->getTypology()) {
                 if (count($wds) >= Constants::TWENTY && count($wds) <= Constants::FORTY_NINE) {
                     $score += Constants::TEN;
                 }
@@ -109,21 +110,21 @@ class AdsServiceImpl implements AdsService
                     $score += Constants::THIRTY;
                 }
 
-                if (Typology::CHALET->equals($ad->getTypology())) {
+                if (Typology::CHALET === $ad->getTypology()) {
                     if (count($wds) >= Constants::FIFTY) {
                         $score += Constants::TWENTY;
                     }
                 }
 
-                if (in_array("luminoso", $wds)) $score += Constants::FIVE;
-                if (in_array("nuevo", $wds)) $score += Constants::FIVE;
-                if (in_array("céntrico", $wds)) $score += Constants::FIVE;
-                if (in_array("reformado", $wds)) $score += Constants::FIVE;
-                if (in_array("ático", $wds)) $score += Constants::FIVE;
+                if (in_array('luminoso', $wds)) $score += Constants::FIVE;
+                if (in_array('nuevo', $wds)) $score += Constants::FIVE;
+                if (in_array('céntrico', $wds)) $score += Constants::FIVE;
+                if (in_array('reformado', $wds)) $score += Constants::FIVE;
+                if (in_array('ático', $wds)) $score += Constants::FIVE;
             }
         }
 
-        //Calcular puntuación por completitud
+        // Calculate score by fullness
         if ($ad->isComplete()) {
             $score = Constants::FORTY;
         }
@@ -139,7 +140,7 @@ class AdsServiceImpl implements AdsService
         }
 
         if ($ad->getScore() < Constants::FORTY) {
-            $ad->setIrrelevantSince(new DateTime());
+            $ad->setIrrelevantSince(new \DateTime());
         } else {
             $ad->setIrrelevantSince(null);
         }

@@ -31,15 +31,13 @@ class AdsController
         return new JsonResponse();
     }
 
-
-    public function toArray(mixed $ad): array
+    private function toArray(mixed $ad): array
     {
         $array = [];
         foreach ((array) $ad  as $property => $value) {
             $array[trim(str_replace(get_class($ad), '', $property))] = $value;
         }
-        return $array;
 
+        return $array;
     }
 }
-

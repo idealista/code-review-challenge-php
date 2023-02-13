@@ -109,19 +109,19 @@ class AdsServiceImpl implements AdsService
                 if (count($wds) >= Constants::FIFTY) {
                     $score += Constants::THIRTY;
                 }
-
-                if (Typology::CHALET === $ad->getTypology()) {
-                    if (count($wds) >= Constants::FIFTY) {
-                        $score += Constants::TWENTY;
-                    }
-                }
-
-                if (in_array('luminoso', $wds)) $score += Constants::FIVE;
-                if (in_array('nuevo', $wds)) $score += Constants::FIVE;
-                if (in_array('céntrico', $wds)) $score += Constants::FIVE;
-                if (in_array('reformado', $wds)) $score += Constants::FIVE;
-                if (in_array('ático', $wds)) $score += Constants::FIVE;
             }
+
+            if (Typology::CHALET === $ad->getTypology()) {
+                if (count($wds) >= Constants::FIFTY) {
+                    $score += Constants::TWENTY;
+                }
+            }
+
+            if (in_array('luminoso', $wds)) $score += Constants::FIVE;
+            if (in_array('nuevo', $wds)) $score += Constants::FIVE;
+            if (in_array('céntrico', $wds)) $score += Constants::FIVE;
+            if (in_array('reformado', $wds)) $score += Constants::FIVE;
+            if (in_array('ático', $wds)) $score += Constants::FIVE;
         }
 
         // Calculate score by fullness

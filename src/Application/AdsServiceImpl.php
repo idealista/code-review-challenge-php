@@ -78,13 +78,13 @@ class AdsServiceImpl implements AdsService
 
         // Calculate score by photos
         if (empty($ad->getPictures())) {
-            $score -= Constants::TEN; // Si no hay fotos restamos 10 puntos
+            $score -= Constants::TEN; // If there are no photos 10 points are subtracted
         } else {
             foreach ($ad->getPictures() as $picture) {
                 if (Quality::HD === $picture->getQuality()) {
-                    $score += Constants::TWENTY; // Cada foto en alta definición aporta 20 puntos
+                    $score += Constants::TWENTY; // Each HD photo scores 20 points
                 } else {
-                    $score += Constants::TEN; // Cada foto normal aporta 10 puntos
+                    $score += Constants::TEN; // Each normal photo adds 10 points
                 }
             }
         }

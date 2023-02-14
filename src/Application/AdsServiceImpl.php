@@ -23,9 +23,7 @@ class AdsServiceImpl implements AdsService
     public function findPublicAds(): array
     {
         $ads = $this->adRepository->findRelevantAds();
-        usort($ads, function (Ad $first, Ad $last): bool {
-            return $first->getScore() >= $last->getScore();
-        });
+        usort($ads, fn (Ad $first, Ad $last): bool => $first->getScore() >= $last->getScore());
 
         $result = [];
         foreach ($ads as $ad) {
@@ -90,11 +88,9 @@ class AdsServiceImpl implements AdsService
         }
 
         // Calculate score by description
-        $optDesc = $ad->getDescription() ?? null;
+        $description = $ad->getDescription() ?? null;
 
-        if (false === is_null($optDesc)) {
-            $description = $optDesc;
-
+        if (false === is_null($description)) {
             if (!empty($description)) {
                 $score += Constants::FIVE;
             }

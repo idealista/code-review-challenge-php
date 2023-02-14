@@ -18,10 +18,10 @@ final class AdsServiceImplTest extends TestCase
     {
         $adRepository = $this->createMock(AdRepository::class);
         $adRepository->method('findAllAds')->willReturn([$this->relevantAd(), $this->irrelevantAd()]);
-        $scoreService = new AdsServiceImpl($adRepository);
-
         $adRepository->expects($this->once())->method('findAllAds');
         $adRepository->expects($this->exactly(2))->method('save');
+
+        $scoreService = new AdsServiceImpl($adRepository);
         $scoreService->calculateScores();
     }
 
